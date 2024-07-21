@@ -1,24 +1,38 @@
 import * as React from 'react';
 import { getContacts } from './api/ContactService';
+import Header from './components/Header';
+import { Routes, Route } from 'react-router-dom';
+import ContactList from './components/ContactList';
 
 function App() {
   const  [data, setData] = React.useState({});
   const  [currentPage, setCurrentPage] = React.useState(0);
 
-  const getAllContacts = async (page: number) => {
+  const getAllContacts = async (page = 0, size = 10) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/contacts?page=${page}`);
-      const data = await response.json();
-      setData(data);
       setCurrentPage(page);
+      const { data } = await getContacts(page, size);
+      setData(data);  
+      console.log(data);
     } catch (error) {
       console.error(error);
     }
   };
 
+  const toggleModal = (show: boolean) => {
+
+  };
+
+  React.useEffect(() => {
+    getAllContacts();
+  }, []);
+
   return (
-    <div className="w-full flex items-center justify-center">
-      <h1 className="text-5xl font-medium">Hello world</h1>
+    <div className="flex flex-col gap-10">
+      <Header toggleModal={toggleModal} nbOfContacts={data.totalElements} />
+      <Routes>
+        <Route path="/contacts" element={<ContactList data={data} currentPage={currentPage} getAllContacts={getAllContacts} />} />
+      </Routes>
     </div>
   );
 }

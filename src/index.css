@@ -6,6 +6,9 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  width: 100%;
+  max-width: 1290px;
+  margin: 0 auto;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -29,9 +32,8 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
+  padding: 20px;
 }
 
 h1 {

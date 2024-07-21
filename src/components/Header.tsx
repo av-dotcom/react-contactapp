@@ -5,8 +5,8 @@ type HeaderType = {
 
 const Header = ({ toggleModal, nbOfContacts }: HeaderType) => {
   return (
-    <div>
-      <h3>Contact List ({nbOfContacts})</h3>
+    <div className="w-full flex justify-between items-center gap-8">
+      <h3 className="font-medium text-2xl">Contacts ({nbOfContacts})</h3>
       <button onClick={() => toggleModal(true)} className="btn">
         <i className="bi bi-plus-square"></i> Add New Contact
       </button>
