@@ -1,10 +1,10 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-//import { useEffect } from 'react';
+import { useState } from 'react';
 
 const schema = yup.object().shape({
-  profilePicture: yup.mixed().required('Profile picture is required'),
+  profilePicture: yup.string().required('Profile picture is required'),
   name: yup.string().required('Name is required'),
   title: yup.string().required('Title is required'),
   email: yup.string().email('Invalid email').required('Email is required'),
@@ -13,7 +13,7 @@ const schema = yup.object().shape({
 });
 
 type IFormInputs = {
-  profilePicture: FileList;
+  profilePicture: FileList | string;
   name: string;
   title: string;
   email: string;
@@ -22,12 +22,22 @@ type IFormInputs = {
 }
 
 const ContactDialog = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<IFormInputs>({
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<IFormInputs>({
     resolver: yupResolver(schema) as any,
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setValue('profilePicture', file.name, { shouldValidate: true });
+    }
+  };
+
   const onSubmit: SubmitHandler<IFormInputs> = values => {
     console.log(values);
+    console.log(selectedFile);
   };
 
   return (
@@ -43,7 +53,12 @@ const ContactDialog = () => {
               type="file"
               className="file-input file-input-bordered w-full"
               accept=".jpeg, .jpg, .png"
+              onChange={handleFileChange}
+            />
+            <input
+              type="hidden"
               {...register('profilePicture')}
+              value={selectedFile?.name || ''}
             />
             <p className="text-red-500">{errors.profilePicture?.message}</p>
           </label>

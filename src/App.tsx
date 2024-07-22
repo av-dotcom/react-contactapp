@@ -1,6 +1,4 @@
 import Header from "./components/Header";
-import { Routes, Route, Navigate } from "react-router-dom";
-import ContactList from "./components/ContactList";
 import useContacts from "./hooks/useContacts";
 import ContactDialog from "./components/ContactDialog";
 import AppRoutes from "./routes/AppRoutes";
