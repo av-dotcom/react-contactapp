@@ -1,24 +1,17 @@
 import Contact from "./Contact";
 import Pagination from "./Pagination";
+import useContacts from "../hooks/useContacts";
 
-type ContactListType = {
-  data: any;
-  currentPage: number;
-  getAllContacts: (page: number) => void;
-};
+const ContactList = () => {
+  const { data, currentPage, getAllContacts } = useContacts();
 
-const ContactList = ({
-  data,
-  currentPage,
-  getAllContacts,
-}: ContactListType) => {
   return (
     <main>
       {data?.content?.length === 0 && (
         <div>No Contacts. Please add a new contact</div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {data?.content?.length > 0 &&
           data.content.map((contact: any) => (
             <Contact contact={contact} key={contact.id} />

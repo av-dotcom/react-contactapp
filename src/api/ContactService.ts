@@ -1,8 +1,9 @@
 import axios from "axios";
+import { Contact, FormData } from "../types/types";
 
 const API_URL = 'http://localhost:8080/contacts';
 
-export async function saveContact(contact: any) {
+export async function saveContact(contact: Contact) {
     return await axios.post(API_URL, contact);
 }
 
@@ -14,11 +15,11 @@ export async function getContact(id: string) {
     return await axios.get(`${API_URL}/${id}`);
 }
 
-export async function udpateContact(contact: any) {
+export async function udpateContact(contact: Contact) {
     return await axios.post(API_URL, contact);
 }
 
-export async function udpatePhoto(formData: any) {
+export async function udpatePhoto(formData: FormData) {
     return await axios.put(`${API_URL}/photo`, formData);
 }
 

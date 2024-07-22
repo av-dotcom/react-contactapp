@@ -1,17 +1,24 @@
 import { useState, useEffect } from "react";
+import { getContacts } from "../api/ContactService";
 import axios from "axios";
 
 interface Contact {
   id: string;
   name: string;
+  title: string;
   email: string;
-  // add other fields as necessary
+  address: string;
+  phone: string;
+  status: string;
+  photoUrl: string;
 }
 
 const useContacts = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<any>({});
+  const [currentPage, setCurrentPage] = useState(0);
 
   const fetchContacts = async () => {
     try {
@@ -24,8 +31,20 @@ const useContacts = () => {
     }
   };
 
+  const getAllContacts = async (page = 0, size = 10) => {
+    try {
+      setCurrentPage(page);
+      const { data } = await getContacts(page, size);
+      setData(data);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    fetchContacts();
+    //fetchContacts();
+    getAllContacts();
   }, []);
 
   const addContact = async (contact: Contact) => {
@@ -46,7 +65,7 @@ const useContacts = () => {
     }
   };
 
-  return { contacts, loading, error, fetchContacts, addContact, deleteContact };
+  return { contacts, loading, error, fetchContacts, addContact, deleteContact, data, currentPage, getAllContacts };
 };
 
 export default useContacts;
