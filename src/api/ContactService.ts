@@ -7,7 +7,7 @@ export async function saveContact(contact: Contact) {
     return await axios.post(API_URL, contact);
 }
 
-export async function getContacts(page = 0, size = 10) {
+export async function getContacts(page = 0, size = 9) {
     return await axios.get(`${API_URL}?page=${page}&size=${size}`);
 }
 

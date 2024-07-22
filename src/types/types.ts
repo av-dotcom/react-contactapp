@@ -1,12 +1,13 @@
 // types.ts
 export interface Contact {
-    id?: string;
+    id: string;
     name: string;
     email: string;
-    phone: string;
+    title: string;
     address: string;
+    phone: string;
     status: string;
-    photoUrl?: string;
+    photoUrl: string;
   }
   
   export interface FormData {

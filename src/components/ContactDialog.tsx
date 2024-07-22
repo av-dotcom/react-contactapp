@@ -1,11 +1,12 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+//import { useEffect } from 'react';
 
 const schema = yup.object().shape({
   profilePicture: yup.mixed().required('Profile picture is required'),
   name: yup.string().required('Name is required'),
-  description: yup.string().required('Description is required'),
+  title: yup.string().required('Title is required'),
   email: yup.string().email('Invalid email').required('Email is required'),
   address: yup.string().required('Address is required'),
   phone: yup.string().required('Phone is required'),
@@ -14,7 +15,7 @@ const schema = yup.object().shape({
 type IFormInputs = {
   profilePicture: FileList;
   name: string;
-  description: string;
+  title: string;
   email: string;
   address: string;
   phone: string;
@@ -25,8 +26,8 @@ const ContactDialog = () => {
     resolver: yupResolver(schema) as any,
   });
 
-  const onSubmit: SubmitHandler<IFormInputs> = data => {
-    console.log(data);
+  const onSubmit: SubmitHandler<IFormInputs> = values => {
+    console.log(values);
   };
 
   return (
@@ -51,8 +52,8 @@ const ContactDialog = () => {
             <p className="text-red-500">{errors.name?.message}</p>
           </label>
           <label className="input input-bordered flex items-center gap-2">
-            <input type="text" className="grow" placeholder="Description" {...register('description')} />
-            <p className="text-red-500">{errors.description?.message}</p>
+            <input type="text" className="grow" placeholder="Title" {...register('title')} />
+            <p className="text-red-500">{errors.title?.message}</p>
           </label>
           <label className="input input-bordered flex items-center gap-2">
             <input type="text" className="grow" placeholder="Email" {...register('email')} />

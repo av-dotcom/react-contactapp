@@ -1,14 +1,12 @@
+type PaginationType = {
+  currentPage: number;
+  getAllContacts: (page: number) => void;
+  data: any;
+};
 
-
-type PaginationType = { 
-    currentPage: number;
-    getAllContacts: (page: number) => void;
-    data: any;
-}
-
-const Pagination = ({currentPage, getAllContacts, data}: PaginationType) => {
+const Pagination = ({ currentPage, getAllContacts, data }: PaginationType) => {
   return (
-    <div className="join">
+    <div className="join flex justify-center mt-10">
       <button
         className={`join-item btn ${currentPage === 0 ? "disabled" : ""}`}
         onClick={() => getAllContacts(currentPage - 1)}

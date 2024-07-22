@@ -16,9 +16,9 @@ interface Contact {
 const useContacts = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<any>({});
-  const [currentPage, setCurrentPage] = useState(0);
 
   const fetchContacts = async () => {
     try {
@@ -31,7 +31,7 @@ const useContacts = () => {
     }
   };
 
-  const getAllContacts = async (page = 0, size = 10) => {
+  const getAllContacts = async (page = 0, size = 9) => {
     try {
       setCurrentPage(page);
       const { data } = await getContacts(page, size);
