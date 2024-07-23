@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useState } from 'react';
+import useContacts from "../hooks/useContacts";
 
 const schema = yup.object().shape({
   profilePicture: yup.string().required('Profile picture is required'),
@@ -23,9 +24,10 @@ type IFormInputs = {
 
 const ContactDialog = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<IFormInputs>({
+  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<IFormInputs>({
     resolver: yupResolver(schema) as any,
   });
+  const { saveContact } = useContacts();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -36,8 +38,12 @@ const ContactDialog = () => {
   };
 
   const onSubmit: SubmitHandler<IFormInputs> = values => {
+    // reset the form
     console.log(values);
-    console.log(selectedFile);
+    saveContact(values);
+    reset();
+    setSelectedFile(null);
+    (document.getElementById('contact_modal') as HTMLDialogElement).close();
   };
 
   return (
@@ -79,7 +85,7 @@ const ContactDialog = () => {
             <p className="text-red-500">{errors.address?.message}</p>
           </label>
           <label className="input input-bordered flex items-center gap-2">
-            <input type="text" className="grow" placeholder="Phone" {...register('phone')} />
+            <input type="number" className="grow" placeholder="Phone" {...register('phone')} />
             <p className="text-red-500">{errors.phone?.message}</p>
           </label>
           <div className="modal-action justify-between">

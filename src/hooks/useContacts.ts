@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { getContacts } from "../api/ContactService";
+import { getContacts, saveContact } from "../api/ContactService";
 import axios from "axios";
 
 interface Contact {
-  id: string;
+  id?: string;
   name: string;
   title: string;
   email: string;
@@ -14,7 +14,6 @@ interface Contact {
 }
 
 const useContacts = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +22,6 @@ const useContacts = () => {
   const fetchContacts = async () => {
     try {
       const response = await axios.get("/api/contacts");
-      setContacts(response.data);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -47,10 +45,10 @@ const useContacts = () => {
     getAllContacts();
   }, []);
 
-  const addContact = async (contact: Contact) => {
+  const saveContact = async (contact: Object) => {
     try {
-      const response = await axios.post("/api/contacts", contact);
-      setContacts([...contacts, response.data]);
+      const response = await saveContact(contact);
+      console.log(response)
     } catch (err) {
       setError((err as Error).message);
     }
@@ -59,13 +57,12 @@ const useContacts = () => {
   const deleteContact = async (id: string) => {
     try {
       await axios.delete(`/api/contacts/${id}`);
-      setContacts(contacts.filter((contact) => contact.id !== id));
     } catch (err: unknown) {
       setError((err as Error).message);
     }
   };
 
-  return { contacts, loading, error, fetchContacts, addContact, deleteContact, data, currentPage, getAllContacts };
+  return { loading, error, fetchContacts, saveContact, deleteContact, data, currentPage, getAllContacts };
 };
 
 export default useContacts;
