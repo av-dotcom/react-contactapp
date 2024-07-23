@@ -1,7 +1,19 @@
 import Contact from "./Contact";
 import Pagination from "./Pagination";
 import useContacts from "../hooks/useContacts";
-import { ContactProps } from "../types/types";
+
+type ContactProps = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  name: string;
+  title: string;
+  address: string;
+  status: string;
+  photoUrl: string;
+};
 
 const ContactList = () => {
   const { data, currentPage, getAllContacts } = useContacts();
@@ -9,7 +21,11 @@ const ContactList = () => {
   return (
     <main>
       {data?.content?.length === 0 && (
-        <h1 className="">No Contacts. Please add a new contact</h1>
+        <div className="text-center">
+          <h1 className="text-2xl">
+            <span className="font-semibold">No contacts yet!</span><br />Add a new one
+          </h1>
+        </div>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

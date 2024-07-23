@@ -24,6 +24,7 @@ body {
   margin: 0 auto;
   display: flex;
   min-height: 100vh;
+  justify-content: center;
   padding: 20px;
 }
 

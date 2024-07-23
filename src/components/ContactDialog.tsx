@@ -1,16 +1,16 @@
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { useState } from 'react';
-import useContacts from "../hooks/useContacts";
+import { useForm, SubmitHandler, set } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useState } from "react";
+import { saveContact, udpatePhoto } from "../api/ContactService";
 
 const schema = yup.object().shape({
-  profilePicture: yup.string().required('Profile picture is required'),
-  name: yup.string().required('Name is required'),
-  title: yup.string().required('Title is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  address: yup.string().required('Address is required'),
-  phone: yup.string().required('Phone is required'),
+  profilePicture: yup.string().required("Profile picture is required"),
+  name: yup.string().required("Name is required"),
+  title: yup.string().required("Title is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  address: yup.string().required("Address is required"),
+  phone: yup.string().required("Phone is required"),
 });
 
 type IFormInputs = {
@@ -20,37 +20,61 @@ type IFormInputs = {
   email: string;
   address: string;
   phone: string;
-}
+};
 
 const ContactDialog = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<IFormInputs>({
+  const [contactId, setContactId] = useState<String | null>(null)
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<IFormInputs>({
     resolver: yupResolver(schema) as any,
   });
-  const { saveContact } = useContacts();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      setValue('profilePicture', file.name, { shouldValidate: true });
+      setValue("profilePicture", file.name, { shouldValidate: true });
     }
   };
 
-  const onSubmit: SubmitHandler<IFormInputs> = values => {
-    // reset the form
-    console.log(values);
-    saveContact(values);
-    reset();
-    setSelectedFile(null);
-    (document.getElementById('contact_modal') as HTMLDialogElement).close();
+  const onSubmit: SubmitHandler<IFormInputs> = async (values) => {
+    try {
+      const contact = {
+        name: values.name,
+        title: values.title,
+        email: values.email,
+        address: values.address,
+        phone: values.phone,
+        status: "Active",
+      };
+      const response = await saveContact(contact);
+      console.log(response);
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("id", response.data.id);
+        await udpatePhoto(formData);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      reset();
+      setSelectedFile(null);
+      (document.getElementById("contact_modal") as HTMLDialogElement).close();
+    }
   };
 
   return (
     <dialog id="contact_modal" className="modal">
       <div className="modal-box flex flex-col">
-        <h1 className='font-semibold text-2xl mb-4'>New contact</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
+        <h1 className="font-semibold text-2xl mb-4">New contact</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Pick your profile picture</span>
@@ -63,34 +87,71 @@ const ContactDialog = () => {
             />
             <input
               type="hidden"
-              {...register('profilePicture')}
-              value={selectedFile?.name || ''}
+              {...register("profilePicture")}
+              value={selectedFile?.name || ""}
             />
             <p className="text-red-500">{errors.profilePicture?.message}</p>
           </label>
           <label className="input input-bordered flex items-center gap-2">
-            <input type="text" className="grow" placeholder="Name" {...register('name')} />
+            <input
+              type="text"
+              className="grow"
+              placeholder="Name"
+              {...register("name")}
+            />
             <p className="text-red-500">{errors.name?.message}</p>
           </label>
           <label className="input input-bordered flex items-center gap-2">
-            <input type="text" className="grow" placeholder="Title" {...register('title')} />
+            <input
+              type="text"
+              className="grow"
+              placeholder="Title"
+              {...register("title")}
+            />
             <p className="text-red-500">{errors.title?.message}</p>
           </label>
           <label className="input input-bordered flex items-center gap-2">
-            <input type="text" className="grow" placeholder="Email" {...register('email')} />
+            <input
+              type="text"
+              className="grow"
+              placeholder="Email"
+              {...register("email")}
+            />
             <p className="text-red-500">{errors.email?.message}</p>
           </label>
           <label className="input input-bordered flex items-center gap-2">
-            <input type="text" className="grow" placeholder="Address" {...register('address')} />
+            <input
+              type="text"
+              className="grow"
+              placeholder="Address"
+              {...register("address")}
+            />
             <p className="text-red-500">{errors.address?.message}</p>
           </label>
           <label className="input input-bordered flex items-center gap-2">
-            <input type="number" className="grow" placeholder="Phone" {...register('phone')} />
+            <input
+              type="number"
+              className="grow"
+              placeholder="Phone"
+              {...register("phone")}
+            />
             <p className="text-red-500">{errors.phone?.message}</p>
           </label>
           <div className="modal-action justify-between">
-            <button type="button" className="btn" onClick={() => (document.getElementById('contact_modal') as HTMLDialogElement).close()}>Cancel</button>
-            <button type="submit" className="btn btn-primary text-white">Save contact</button>
+            <button
+              type="button"
+              className="btn"
+              onClick={() =>
+                (
+                  document.getElementById("contact_modal") as HTMLDialogElement
+                ).close()
+              }
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary text-white">
+              Save contact
+            </button>
           </div>
         </form>
       </div>
