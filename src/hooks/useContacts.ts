@@ -28,7 +28,7 @@ const useContacts = () => {
 
   useEffect(() => {
     getAllContacts();
-  }, [data]);
+  }, []);
 
   return { loading, error, deleteContact, data, currentPage, getAllContacts };
 };

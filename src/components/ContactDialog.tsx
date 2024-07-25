@@ -2,7 +2,8 @@ import { useForm, SubmitHandler, set } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useState } from "react";
-import { saveContact, udpatePhoto } from "../api/ContactService";
+import { saveContact, updatePhoto } from "../api/ContactService";
+import ContactForm from "./ContactForm";
 
 const schema = yup.object().shape({
   profilePicture: yup.string().required("Profile picture is required"),
@@ -24,7 +25,6 @@ type IFormInputs = {
 
 const ContactDialog = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [contactId, setContactId] = useState<String | null>(null)
   const {
     register,
     handleSubmit,
@@ -59,7 +59,7 @@ const ContactDialog = () => {
         const formData = new FormData();
         formData.append("file", selectedFile);
         formData.append("id", response.data.id);
-        await udpatePhoto(formData);
+        await updatePhoto(formData);
       }
     } catch (error) {
       console.log(error);
@@ -73,87 +73,16 @@ const ContactDialog = () => {
   return (
     <dialog id="contact_modal" className="modal">
       <div className="modal-box flex flex-col">
-        <h1 className="font-semibold text-2xl mb-4">New contact</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text">Pick your profile picture</span>
-            </div>
-            <input
-              type="file"
-              className="file-input file-input-bordered w-full"
-              accept=".jpeg, .jpg, .png"
-              onChange={handleFileChange}
-            />
-            <input
-              type="hidden"
-              {...register("profilePicture")}
-              value={selectedFile?.name || ""}
-            />
-            <p className="text-red-500">{errors.profilePicture?.message}</p>
-          </label>
-          <label className="input input-bordered flex items-center gap-2">
-            <input
-              type="text"
-              className="grow"
-              placeholder="Name"
-              {...register("name")}
-            />
-            <p className="text-red-500">{errors.name?.message}</p>
-          </label>
-          <label className="input input-bordered flex items-center gap-2">
-            <input
-              type="text"
-              className="grow"
-              placeholder="Title"
-              {...register("title")}
-            />
-            <p className="text-red-500">{errors.title?.message}</p>
-          </label>
-          <label className="input input-bordered flex items-center gap-2">
-            <input
-              type="text"
-              className="grow"
-              placeholder="Email"
-              {...register("email")}
-            />
-            <p className="text-red-500">{errors.email?.message}</p>
-          </label>
-          <label className="input input-bordered flex items-center gap-2">
-            <input
-              type="text"
-              className="grow"
-              placeholder="Address"
-              {...register("address")}
-            />
-            <p className="text-red-500">{errors.address?.message}</p>
-          </label>
-          <label className="input input-bordered flex items-center gap-2">
-            <input
-              type="number"
-              className="grow"
-              placeholder="Phone"
-              {...register("phone")}
-            />
-            <p className="text-red-500">{errors.phone?.message}</p>
-          </label>
-          <div className="modal-action justify-between">
-            <button
-              type="button"
-              className="btn"
-              onClick={() =>
-                (
-                  document.getElementById("contact_modal") as HTMLDialogElement
-                ).close()
-              }
-            >
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-primary text-white">
-              Save contact
-            </button>
-          </div>
-        </form>
+        <h1 className="font-semibold text-2xl mb-4">Add New contact</h1>
+        <ContactForm
+          handleFileChange={handleFileChange}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+          register={register}
+          selectedFile={selectedFile}
+          errors={errors}
+          defaultValues={{}}
+        />
       </div>
       <form method="dialog" className="modal-backdrop">
         <button>close</button>

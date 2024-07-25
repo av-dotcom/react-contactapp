@@ -14,11 +14,11 @@ export async function getContact(id: string) {
     return await axios.get(`${API_URL}/${id}`);
 }
 
-export async function udpateContact(contact: Object) {
+export async function updateContact(contact: Object) {
     return await axios.post(API_URL, contact);
 }
 
-export async function udpatePhoto(formData: FormData) {
+export async function updatePhoto(formData: FormData) {
     return await axios.put(`${API_URL}/photo`, formData);
 }
 
