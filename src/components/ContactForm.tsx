@@ -27,23 +27,25 @@ const ContactForm = ({
 }: ContactFormProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      <label className="form-control w-full">
-        <div className="label">
-          <span className="label-text">Pick your profile picture</span>
-        </div>
-        <input
-          type="file"
-          className="file-input file-input-bordered w-full"
-          accept=".jpeg, .jpg, .png"
-          onChange={handleFileChange}
-        />
-        <input
-          type="hidden"
-          {...register("profilePicture")}
-          value={defaultValues?.profilePicture || ""}
-        />
-        <p className="text-red-500">{errors.profilePicture?.message}</p>
-      </label>
+      {!defaultValues?.name && (
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">Pick your profile picture</span>
+          </div>
+          <input
+            type="file"
+            className="file-input file-input-bordered w-full"
+            accept=".jpeg, .jpg, .png"
+            onChange={handleFileChange}
+          />
+          <input
+            type="hidden"
+            {...register("profilePicture")}
+            value={defaultValues?.profilePicture || ""}
+          />
+          <p className="text-red-500">{errors.profilePicture?.message}</p>
+        </label>
+      )}
       <label className="input input-bordered flex items-center gap-2">
         <input
           type="text"
